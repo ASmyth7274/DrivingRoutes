@@ -68,7 +68,7 @@ These are practice loops, not test routes. Each one copies the mix of roads in o
 | 7 | Polesworth to the Egg & the A5 | Polesworth | B5000 country road, the Egg, Riverdrive, A5, M42 J10 |
 | 8 | Wilnecote & Two Gates | Tamworth station | Old Watling Street, side roads, bus stops, Glascote |
 
-Switch to them with the centre name on the home screen. When you know where your test will be, add that centre too (see below).
+They're for practising near home: your test centre stays Chilwell. Switch between the two with the centre name on the home screen.
 
 ## Switching test centre
 
