@@ -36,6 +36,7 @@ export class NavSession extends Emitter {
       ...(o.settings || {}),
     };
     this.destination = o.destination || null;
+    this.parkAtDestination = o.parkAtDestination !== false;
     this.notes = (o.notes || []).map((n) => ({ radius: 180, ...n, alerted: false }));
     this.originalData = o.data;
     this.rerouteCount = 0;
@@ -61,6 +62,7 @@ export class NavSession extends Emitter {
       style: this.settings.voiceStyle,
       units: this.settings.units,
       destination: this.destination,
+      parkAtDestination: this.parkAtDestination,
     });
     this.modelVersion++;
   }

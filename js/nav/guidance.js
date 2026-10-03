@@ -17,6 +17,8 @@ export class Guidance {
     this.style = opts.style || 'satnav';
     this.units = opts.units || 'imperial';
     this.destination = opts.destination || null;
+    // At a test centre the examiner asks you to park in a bay; elsewhere just to pull up.
+    this.parkAtDestination = opts.parkAtDestination !== false;
     this.spoken = new Set();
     this.lastNextIndex = -1;
   }
@@ -44,7 +46,7 @@ export class Guidance {
     if (step.type === 'turn' && side) {
       ordinalOnSide = this.model.sideRoadsBetween(along, step.along, side) + 1;
     }
-    return examinerText(step, { ordinalOnSide, destination: this.destination });
+    return examinerText(step, { ordinalOnSide, destination: this.parkAtDestination ? this.destination : null });
   }
 
   /** The prompt to speak when guidance starts (or restarts after a reroute). */

@@ -6,14 +6,17 @@ import { recordDrive } from '../lib/storage.js';
 import { displayDistance, formatClock, formatDuration, mph, spokenDistance } from '../lib/units.js';
 import { instructionText, lowerFirst } from '../nav/instructions.js';
 import { NavSession } from '../nav/session.js';
-import { route as routeRequest } from '../services/router.js';
 import { fetchSpeedLimits } from '../services/speedlimits.js';
+import { routeAvoidingUturns } from '../services/uturns.js';
 import { $, choose, confirmDialog, icon, toast } from './dom.js';
 import { directionArrow, lanesHtml, maneuverIcon } from './icons.js';
 
 export const fullscreen = true;
 
 let S = null;
+
+// The banner's countdown bar empties over this distance before each turn.
+const COUNTDOWN_M = 300;
 
 const MOCK_INTRO = "This is a mock driving test. I'd like you to follow the road ahead at all times, unless traffic signs direct you otherwise, or I ask you to turn.";
 const MOCK_INDEPENDENT = "For the next part of the test, I'd like you to follow the sat nav directions until I tell you otherwise. If you go the wrong way, don't worry, the sat nav will get you back on track.";
@@ -35,6 +38,7 @@ function buildDom(sim) {
           <div class="sub" id="nv-sub"></div>
         </div>
         <div class="lanes" id="nv-lanes"></div>
+        <div class="countdown" id="nv-count" hidden><i></i></div>
       </div>
       <div class="then" id="nv-then" hidden></div>
     </div>
@@ -121,7 +125,7 @@ export async function enter(app, params) {
     return;
   }
   const centre = app.centre;
-  const destination = centre.destinationName || 'the test centre';
+  const destination = route.destinationName || centre.destinationName || 'the test centre';
   const notes = [...(centre.hotspots || []), ...(route.notes || [])];
   const mock = !!params.mock;
 
@@ -147,7 +151,8 @@ export async function enter(app, params) {
 
   const session = new NavSession({
     data,
-    rerouter: (points, opts) => routeRequest(points, opts),
+    // One quick try at avoiding a U-turn when getting back on route.
+    rerouter: (points, opts) => routeAvoidingUturns(points, { ...opts, rounds: 1, maxExtra: 0.6 }).then((b) => b.data),
     speak: speakWrapper(app),
     settings: {
       voiceStyle: mock ? 'examiner' : app.settings.voiceStyle,
@@ -159,6 +164,7 @@ export async function enter(app, params) {
     },
     notes,
     destination,
+    parkAtDestination: !centre.practice && !route.destinationName,
   });
   S.session = session;
 
@@ -169,6 +175,10 @@ export async function enter(app, params) {
   requestAnimationFrame(measure);
 
   if (app.settings.keepAwake) app.wake.enable();
+  app.voice.claimAudio();
+  if (!app.voice.enabled) {
+    setTimeout(() => toast('Voice is off. Tap the speaker button to hear directions.', { top: true, ms: 5000 }), 600);
+  }
   S.offWake = app.wake.on('change', () => renderAwake());
   renderAwake();
 
@@ -289,7 +299,7 @@ function renderAwake() {
 function bannerFor(snap) {
   const app = S.app;
   const units = app.settings.units;
-  const dest = app.centre.destinationName || 'the test centre';
+  const dest = S.route.destinationName || app.centre.destinationName || 'the test centre';
   const heading = S.disp.bearing || 0;
   const examinerPhase = S.session.settings.voiceStyle === 'examiner';
   if (snap.status === 'approach' && snap.target && snap.target.distance > 35) {
@@ -346,6 +356,13 @@ function renderPanel(snap) {
 
   const showGuidance = !b.cls && snap.next;
   setHtml('nv-lanes', showGuidance && snap.nextDistance != null && snap.nextDistance < 500 ? lanesHtml(snap.next) : '');
+  const count = el('nv-count');
+  if (count) {
+    const d = snap.nextDistance;
+    const on = !!showGuidance && d != null && d < COUNTDOWN_M;
+    count.hidden = !on;
+    if (on) count.firstElementChild.style.transform = `scaleX(${Math.max(0, d / COUNTDOWN_M).toFixed(3)})`;
+  }
   const thenEl = el('nv-then');
   if (thenEl) {
     if (showGuidance && snap.then && !(S.mock && S.session.settings.voiceStyle === 'examiner')) {
@@ -540,7 +557,7 @@ function repeatInstruction() {
     return;
   }
   if (snap.status === 'on' && snap.next) {
-    const dest = app.centre.destinationName || 'the test centre';
+    const dest = S.route.destinationName || app.centre.destinationName || 'the test centre';
     const d = snap.nextDistance ?? 0;
     const text = instructionText(snap.next, { spoken: true, destination: dest });
     app.voice.say(d > 60 ? `In ${spokenDistance(d, app.settings.units)}, ${lowerFirst(text)}.` : `${text}.`, { priority: 'high' });
@@ -599,6 +616,7 @@ function cleanup() {
   window.removeEventListener('resize', S.onResize);
   app.wake.disable();
   app.voice.stop();
+  app.voice.releaseAudio();
   app.map.hidePuck();
   app.map.setOffRouteLine(null);
   app.map.setManeuverArrow(null);

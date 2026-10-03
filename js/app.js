@@ -28,6 +28,9 @@ class App {
     this.voice.enabled = this.settings.voice;
     this.voice.voiceName = this.settings.voiceName;
     this.voice.rate = this.settings.voiceRate;
+    this.voice.playThroughSilent = this.settings.voiceInSilent !== false;
+    this.voice.on('fail', () => toast('No sound from the voice. Turn the volume up, and check your phone isn\'t on Silent.', { top: this.screenName === 'navigate', ms: 6000 }));
+    this.voice.on('voicefallback', ({ name }) => toast(`The voice "${name}" isn't installed on this phone, so the standard voice is being used.`, { ms: 5000 }));
     this.wake = new ScreenWake();
     this.centre = null;
     this.compiled = new Map();
@@ -76,6 +79,8 @@ class App {
     this.voice.enabled = this.settings.voice;
     this.voice.voiceName = this.settings.voiceName;
     this.voice.rate = this.settings.voiceRate;
+    this.voice.playThroughSilent = this.settings.voiceInSilent !== false;
+    if ('voiceInSilent' in patch && !this.settings.voiceInSilent) this.voice.releaseAudio();
     if ('mapTheme' in patch) this.applyTheme();
     this.emitSettings?.(this.settings);
   }
@@ -146,6 +151,7 @@ class App {
     $('#page').hidden = true;
     $('#nav').hidden = true;
     next.enter(this, params);
+    if (this.updatePending) setTimeout(() => this.applyUpdateIfIdle(), 1500);
   }
 
   back(fallback = 'home') {
@@ -161,17 +167,28 @@ class App {
 
   registerServiceWorker() {
     if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
+    // When a new version takes over, reload into it straight away, unless a
+    // route is running, in which case wait until it ends.
+    const hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController || this.reloading) return;
+      this.updatePending = true;
+      this.applyUpdateIfIdle();
+    });
     navigator.serviceWorker.register('sw.js').then((reg) => {
-      reg.addEventListener('updatefound', () => {
-        const w = reg.installing;
-        w?.addEventListener('statechange', () => {
-          if (w.state === 'installed' && navigator.serviceWorker.controller) {
-            this.updateReady = w;
-            if (this.screenName !== 'navigate') toast('An update is ready. It will be used next time you open the app.', { ms: 5000 });
-          }
-        });
+      // Check for a new version whenever the app comes back to the front.
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') reg.update().catch(() => {});
       });
     }).catch((err) => console.warn('Service worker registration failed', err));
+  }
+
+  applyUpdateIfIdle() {
+    if (!this.updatePending || this.reloading) return;
+    if (this.screenName === 'navigate' || this.screenName === 'record' || this.screenName === 'editor') return;
+    this.reloading = true;
+    toast('Updating to the latest version…', { ms: 1500 });
+    setTimeout(() => location.reload(), 600);
   }
 }
 

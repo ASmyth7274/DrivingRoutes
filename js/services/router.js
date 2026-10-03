@@ -68,7 +68,10 @@ export async function routeValhalla(points, { signal } = {}) {
 
 const PROVIDERS = { osrm: routeOsrm, valhalla: routeValhalla };
 
-/** Try each provider in turn; retries without bearings if snapping failed. */
+/**
+ * Try each provider in turn; retries without bearings if snapping failed
+ * (unless opts.strict, used when testing alternative versions of a route).
+ */
 export async function route(points, opts = {}) {
   const order = opts.providers || ['osrm', 'valhalla'];
   let lastErr = null;
@@ -80,7 +83,7 @@ export async function route(points, opts = {}) {
       if (err?.name === 'AbortError') throw err;
       if (err?.code === 'offline') throw err;
       lastErr = err;
-      if (points.some((p) => p.bearing != null)) {
+      if (!opts.strict && points.some((p) => p.bearing != null)) {
         try {
           return await fn(points.map((p) => ({ ...p, bearing: null })), opts);
         } catch (err2) {

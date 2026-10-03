@@ -50,7 +50,7 @@ function render(app) {
       <div class="row">
         <div class="label"><div class="t">Voice</div></div>
         <select data-set="voiceName">
-          <option value="">Automatic (British)</option>
+          <option value="">Standard British voice (recommended)</option>
           ${voices.map((v) => `<option value="${esc(v.name)}" ${v.name === s.voiceName ? 'selected' : ''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')}
         </select>
       </div>
@@ -58,7 +58,8 @@ function render(app) {
         <div class="label"><div class="t">Speaking speed</div></div>
         <input type="range" min="0.7" max="1.3" step="0.05" value="${s.voiceRate}" data-set="voiceRate">
       </div>
-      <button class="row" data-act="testvoice"><div class="label"><div class="t" style="color:var(--accent)">Test voice</div></div></button>
+      <div class="row"><div class="label"><div class="t">Speak in Silent Mode</div><div class="s">iPhones mute web voices in Silent Mode. This lets directions through, but may pause music while they play.</div></div>${toggle('voiceInSilent', s.voiceInSilent !== false)}</div>
+      <button class="row" data-act="testvoice"><div class="label"><div class="t" style="color:var(--accent)">Test voice</div><div class="s" id="voice-test-status">Plays a sample direction</div></div></button>
       <div class="row"><div class="label"><div class="t">Read out area tips</div><div class="s">e.g. busy roundabouts and tram crossings</div></div>${toggle('spokenNotes', s.spokenNotes)}</div>
     </div>
 
@@ -148,7 +149,7 @@ function render(app) {
     if (!a) return;
     const act = a.dataset.act;
     if (act === 'back') app.back();
-    else if (act === 'testvoice') app.voice.say('In 200 yards, at the roundabout, take the third exit onto the A 52, Brian Clough Way.', { priority: 'high' });
+    else if (act === 'testvoice') testVoice(app);
     else if (act === 'offline') downloadOffline(app);
     else if (act === 'prepare') prepareAll(app);
     else if (act === 'export') {
@@ -178,6 +179,32 @@ function render(app) {
       }
     }
   };
+}
+
+function testVoice(app) {
+  const status = $('#voice-test-status');
+  if (!app.voice.supported) {
+    if (status) status.textContent = 'This browser has no built-in voices.';
+    return;
+  }
+  if (!app.voice.enabled) {
+    if (status) status.textContent = 'Spoken directions are switched off above.';
+    return;
+  }
+  if (status) status.textContent = 'Playing…';
+  let heard = false;
+  const off = app.voice.on('start', () => {
+    heard = true;
+    if (status) status.textContent = 'Working. If you heard nothing, turn the volume up.';
+    off();
+  });
+  app.voice.prime('In 200 yards, at the roundabout, take the third exit.');
+  setTimeout(() => {
+    off();
+    if (!heard && status) {
+      status.textContent = "The voice didn't start. Check the volume and that Silent Mode is off, or pick the standard voice above.";
+    }
+  }, 3500);
 }
 
 let downloading = false;

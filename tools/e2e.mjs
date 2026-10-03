@@ -100,7 +100,7 @@ function fakeOsrmRoute(url) {
       name: name2, ref: rb ? 'A52' : undefined, distance: d2, duration: d2 / 12, driving_side: 'left',
       intersections: [{ location: mid, bearings: [0, 90, 180, 270], entry: [true, true, true, true], in: 2, out: 1, lanes: rb ? undefined : [{ indications: ['left'], valid: i % 2 === 0 }, { indications: ['straight', 'right'], valid: i % 2 === 1 }] }],
     });
-    steps.push({ geometry: { type: 'LineString', coordinates: [b, b] }, maneuver: { type: 'arrive', location: b, bearing_before: 0, bearing_after: 0 }, name: name2, distance: 0, duration: 0, driving_side: 'left', intersections: [{ location: b, bearings: [0], entry: [true], in: 0 }] });
+    steps.push({ geometry: { type: 'LineString', coordinates: [b, b] }, maneuver: { type: 'arrive', location: b, bearing_before: Math.round(bearing(mid, b)), bearing_after: 0 }, name: name2, distance: 0, duration: 0, driving_side: 'left', intersections: [{ location: b, bearings: [0], entry: [true], in: 0 }] });
     legs.push({ steps, distance: d1 + d2, duration: (d1 + d2) / 12 });
   }
   const total = legs.reduce((s, l) => s + l.distance, 0);
@@ -171,6 +171,15 @@ const context = await browser.newContext({
   timezoneId: 'Europe/London',
 });
 await context.route('**/*', handle);
+// Record what the app asks the speech engine to say (and pretend it plays).
+await context.addInitScript(() => {
+  window.__spoken = [];
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.speak = (u) => {
+    window.__spoken.push(u.text);
+    setTimeout(() => { u.onstart?.(); setTimeout(() => u.onend?.(), 50); }, 10);
+  };
+});
 const page = await context.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
@@ -196,6 +205,10 @@ await page.waitForSelector('[data-act="drive"]', { timeout: 15000 });
 await page.waitForTimeout(800);
 await shot('03-preview');
 check(await page.locator('.steps-list li').count() > 3, 'preview shows turn-by-turn list');
+check(await page.locator('.steps-list svg text').count() > 0, 'roundabout icons show the exit number');
+const noUturns = await page.locator('.check-line', { hasText: 'No U-turns' }).count();
+const uturnWarnings = await page.locator('.note-box.warn', { hasText: 'U-turn' }).count();
+check(noUturns + uturnWarnings > 0, `route screen reports U-turns (${noUturns ? 'none' : `${uturnWarnings} flagged`})`);
 
 // Practice drive (simulated)
 await page.locator('[data-act="sim"]').click();
@@ -218,6 +231,9 @@ await page.waitForFunction(() => window.__app && document.querySelector('#nv-ban
 await page.waitForTimeout(1500);
 await shot('06-nav-rerouted');
 check(osrmCalls > callsBefore, `rerouted after wrong turn (${osrmCalls - callsBefore} routing calls)`);
+const countdown = await page.waitForSelector('#nv-count:not([hidden])', { timeout: 30000 }).then(() => true).catch(() => false);
+check(countdown, 'countdown bar shows as a turn gets close');
+if (countdown) await shot('06b-nav-countdown');
 
 // Lanes and roundabout icons render at some point; check the speed limit sign appeared
 const limitVisible = await page.locator('#nv-limit').isVisible();
@@ -235,6 +251,9 @@ await page.locator('#nv-end').click();
 await page.locator('.modal .btn.danger').click();
 await page.waitForSelector('[data-act="drive"]', { timeout: 10000 });
 check(true, 'ended navigation back to preview');
+const spoken = await page.evaluate(() => window.__spoken);
+check(spoken.includes('Starting practice drive.'), 'voice is primed from the Start tap');
+check(spoken.some((t) => /^(Head |In \d+ yards|Turn |At the roundabout)/.test(t)), `voice directions spoken (${spoken.filter((t) => t.trim()).length} prompts)`);
 
 // Settings page
 await page.locator('[data-act="back"]').first().click();
@@ -288,6 +307,24 @@ await page.fill('#ed-name', 'My test loop');
 await page.locator('[data-act="save"]').click();
 await page.waitForSelector('[data-act="drive"]', { timeout: 15000 });
 check(/My test loop/.test(await page.locator('.preview-head h2').textContent()), 'saved custom route opens in preview');
+
+// Tamworth & Polesworth practice area
+await page.locator('[data-act="back"]').first().click();
+await page.waitForSelector('.centre-chip');
+await page.locator('.centre-chip').click();
+await page.locator('[data-centre="tamworth-polesworth"]').click();
+await page.waitForSelector('.route-card', { timeout: 15000 });
+await page.waitForFunction(() => !document.querySelector('#prep-status .spinner'), null, { timeout: 30000 }).catch(() => {});
+await page.waitForTimeout(800);
+const practiceTitle = await page.locator('.section-title span').first().textContent();
+check(/Practice routes/.test(practiceTitle), `Tamworth shows practice routes (${practiceTitle})`);
+check((await page.locator('.route-card').count()) >= 8, 'Tamworth & Polesworth has 8 routes');
+await shot('13a-tamworth-home');
+await page.locator('.route-card', { hasText: 'M42 junction 10' }).click();
+await page.waitForSelector('[data-act="drive"]', { timeout: 15000 });
+await page.waitForTimeout(600);
+await shot('13b-tamworth-preview');
+check(/Arrive at Polesworth/.test(await page.locator('.steps-list').textContent()), 'Polesworth route finishes at Polesworth');
 
 // Switch back to Chilwell and run a mock test briefly
 await page.locator('[data-act="back"]').first().click();

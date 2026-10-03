@@ -3,7 +3,7 @@
 import { deleteCustomRoute, getHistory, setRouteHidden } from '../lib/storage.js';
 import { displayDistanceText, formatDuration } from '../lib/units.js';
 import { instructionText } from '../nav/instructions.js';
-import { RouteModel } from '../nav/route-model.js';
+import { isUturnStep, RouteModel } from '../nav/route-model.js';
 import { $, choose, confirmDialog, esc, icon, saveTextFile, toast } from './dom.js';
 import { maneuverIcon } from './icons.js';
 
@@ -90,10 +90,11 @@ function render(app, route, data, params) {
   const maxLimit = (data.speedLimits || []).reduce((m, r) => Math.max(m, r.mph || 0), 0);
   const hist = getHistory(app.centre.id, route.id);
   const hide = !!params.hideName;
+  const uturns = model.steps.filter(isUturnStep).length;
 
   const steps = model.announced.map((s, i) => {
     const prev = i === 0 ? 0 : model.announced[i - 1].along;
-    return `<li>${maneuverIcon(s)}<span>${esc(instructionText(s, { destination: app.centre.destinationName || 'the test centre' }))}</span>
+    return `<li>${maneuverIcon(s)}<span>${esc(instructionText(s, { destination: route.destinationName || app.centre.destinationName || 'the test centre' }))}</span>
       <span class="d">${displayDistanceText(s.along - prev, units)}</span></li>`;
   }).join('');
 
@@ -109,6 +110,7 @@ function render(app, route, data, params) {
       <div class="stat"><div class="v">${roundabouts}</div><div class="k">roundabouts</div></div>
       <div class="stat"><div class="v">${maxLimit || '–'}</div><div class="k">top limit</div></div>
     </div>
+    ${uturns ? '' : `<p class="check-line">${icon('check')}<span>No U-turns</span></p>`}
     ${(data.warnings || []).map((w) => `<div class="note-box warn"><b>Check this route</b>${esc(w)}</div>`).join('')}
     <div class="actions">
       <button class="btn go block" data-act="drive">${icon('play')} Start route</button>
@@ -130,8 +132,11 @@ function render(app, route, data, params) {
     if (!a) return;
     const act = a.dataset.act;
     if (act === 'back') app.back();
-    else if (act === 'drive') app.show('navigate', { routeId: route.id, simulate: false, mock: !!params.mock });
-    else if (act === 'sim') app.show('navigate', { routeId: route.id, simulate: true, mock: !!params.mock });
+    else if (act === 'drive' || act === 'sim') {
+      // Speak straight away, inside the tap, so iOS lets the voice play (and you know it works).
+      if (app.voice.enabled) app.voice.prime(act === 'sim' ? 'Starting practice drive.' : 'Starting route.');
+      app.show('navigate', { routeId: route.id, simulate: act === 'sim', mock: !!params.mock });
+    }
     else if (act === 'steps') $('#steps')?.scrollIntoView({ behavior: 'smooth' });
     else if (act === 'menu') menu(app, route, data, params);
   };

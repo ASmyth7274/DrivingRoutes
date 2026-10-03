@@ -6,6 +6,7 @@ export const DEFAULT_SETTINGS = {
   voice: true,
   voiceName: null,
   voiceRate: 1,
+  voiceInSilent: true,      // speak even when the iPhone is in Silent Mode
   voiceStyle: 'satnav',     // 'satnav' | 'examiner'
   units: 'imperial',        // 'imperial' | 'metric'
   speedWarnings: true,

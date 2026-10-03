@@ -1,7 +1,7 @@
 // Service worker: makes the app open with no signal, and keeps map tiles,
 // fonts and styles that have been seen (or downloaded in Settings) for offline use.
 
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 const SHELL_CACHE = `dtr-shell-${VERSION}`;
 const MAP_CACHE = 'dtr-map-v1';
 const MAP_CACHE_MAX = 6000;
@@ -18,6 +18,7 @@ const SHELL = [
   'icons/apple-touch-icon.png',
   'data/centres/index.json',
   'data/centres/nottingham-chilwell.json',
+  'data/centres/tamworth-polesworth.json',
   'js/app.js',
   'js/version.js',
   'js/device/gps.js',
@@ -44,6 +45,7 @@ const SHELL = [
   'js/services/router.js',
   'js/services/snapper.js',
   'js/services/speedlimits.js',
+  'js/services/uturns.js',
   'js/ui/centres.js',
   'js/ui/dom.js',
   'js/ui/editor.js',

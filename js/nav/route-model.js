@@ -15,12 +15,85 @@
 // }
 
 import {
-  angleDiff, cumulativeDistances, distance, nearestOnLine, pointAlong,
+  angleDiff, bearing, cumulativeDistances, distance, nearestOnLine, pointAlong,
   round6, segmentBearings, segmentIndexAt,
 } from '../lib/geo.js';
 import { decodePolyline } from '../lib/polyline.js';
 
-export const ROUTE_DATA_VERSION = 2;
+export const ROUTE_DATA_VERSION = 3;
+
+export const ROUNDABOUT_TYPES = new Set(['roundabout', 'rotary', 'roundabout turn']);
+
+/** Typical turn angle for each OSRM direction modifier (negative = left). */
+export const MOD_ANGLE = {
+  'straight': 0,
+  'slight right': 40,
+  'right': 90,
+  'sharp right': 140,
+  'uturn': 180,
+  'slight left': -40,
+  'left': -90,
+  'sharp left': -140,
+};
+
+/** Exit direction of a roundabout step relative to the way in (negative = left). */
+export function roundaboutAngle(step) {
+  if (step.exitAngle != null) return step.exitAngle;
+  if (MOD_ANGLE[step.modifier] != null) return MOD_ANGLE[step.modifier];
+  if (step.exit) return [-90, 0, 90, 180][Math.min(3, step.exit - 1)];
+  return 0;
+}
+
+/** A step that asks the driver to turn round in the road (not a roundabout). */
+export function isUturnStep(step) {
+  return step.modifier === 'uturn' && !ROUNDABOUT_TYPES.has(step.type) &&
+    step.type !== 'arrive' && step.type !== 'depart' && !String(step.type).startsWith('exit ');
+}
+
+/**
+ * Direction of the road you leave a roundabout on, found from the route's
+ * shape: going round the ring keeps turning one way (right, clockwise, when
+ * driving on the left) and leaving it is a turn the other way.
+ * Returns a bearing in degrees, or null if the exit can't be seen.
+ */
+export function roundaboutExitBearing(coords, from, to, drivingSide = 'left') {
+  const ring = drivingSide === 'right' ? -1 : 1;
+  const pts = [];
+  let d = 0;
+  for (let i = from; i <= Math.min(to, coords.length - 1); i++) {
+    if (pts.length) {
+      const seg = distance(pts[pts.length - 1].p, coords[i]);
+      if (seg < 0.3) continue;
+      d += seg;
+    }
+    pts.push({ p: coords[i], d });
+    if (d > 800) break;
+  }
+  if (pts.length < 3) return null;
+  for (let k = 1; k < pts.length - 1; k++) {
+    if (pts[k].d < 6) continue;
+    const bIn = bearing(pts[k - 1].p, pts[k].p);
+    let j = k + 1;
+    while (j < pts.length - 1 && pts[j].d - pts[k].d < 25) j++;
+    const turn = angleDiff(bIn, bearing(pts[k].p, pts[j].p)) * ring;
+    if (turn < -30) {
+      // The exit is the sharpest turn away from the ring in this stretch.
+      let best = k;
+      let bestTurn = 0;
+      for (let v = k; v < j; v++) {
+        const t = angleDiff(bearing(pts[v - 1].p, pts[v].p), bearing(pts[v].p, pts[v + 1].p)) * ring;
+        if (t < bestTurn) {
+          bestTurn = t;
+          best = v;
+        }
+      }
+      let e = best + 1;
+      while (e < pts.length - 1 && pts[e].d - pts[best].d < 30) e++;
+      return bearing(pts[best].p, pts[e].p);
+    }
+  }
+  return null;
+}
 
 function stepGeometry(geometry, precision) {
   if (!geometry) return [];
@@ -66,6 +139,7 @@ export function normalizeOsrmRoute(route, { provider = 'osrm', precision = 5, vi
     }
   };
 
+  let arriveBearing = null;
   legs.forEach((leg, li) => {
     const lastLeg = li === legs.length - 1;
     (leg.steps || []).forEach((s) => {
@@ -80,7 +154,34 @@ export function normalizeOsrmRoute(route, { provider = 'osrm', precision = 5, vi
       const type = m.type || 'turn';
       const prev = steps[steps.length - 1];
 
-      if (type === 'arrive' && !lastLeg) return;
+      if (type === 'arrive' && !lastLeg) {
+        arriveBearing = m.bearing_before ?? null;
+        return;
+      }
+      // The router turned round at a waypoint: make that a real, announced U-turn.
+      const reversedAtVia = type === 'depart' && li > 0 && arriveBearing != null && m.bearing_after != null &&
+        Math.abs(angleDiff(arriveBearing, m.bearing_after)) > 150;
+      if (reversedAtVia) {
+        steps.push({
+          type: 'continue',
+          modifier: 'uturn',
+          exit: null,
+          bearingBefore: arriveBearing,
+          bearingAfter: m.bearing_after,
+          location: round6(m.location || g[0] || [0, 0]),
+          name: (s.name || '').trim(),
+          ref: (s.ref || '').trim(),
+          destinations: '',
+          rotaryName: '',
+          drivingSide: s.driving_side || 'left',
+          start: Math.min(start, Math.max(0, coords.length - 1)),
+          distance: s.distance || 0,
+          duration: s.duration || 0,
+          intersections: compactIntersections(s.intersections).slice(1),
+          atWaypoint: true,
+        });
+        return;
+      }
       if ((type === 'depart' && li > 0 && prev) || (MERGE_INTO_PREVIOUS.has(type) && prev)) {
         prev.distance += s.distance || 0;
         prev.duration += s.duration || 0;
@@ -153,6 +254,20 @@ export class RouteModel {
       const next = this.steps[i + 1];
       this.steps[i].end = next ? next.along : this.length;
       this.steps[i].geomLength = Math.max(0, this.steps[i].end - this.steps[i].along);
+    }
+    // Which way each roundabout really goes (OSRM's bearing_after only says
+    // which way you turn onto the ring, so it can't be used for that).
+    for (let i = 0; i < this.steps.length; i++) {
+      const st = this.steps[i];
+      if (!ROUNDABOUT_TYPES.has(st.type)) continue;
+      const toIdx = this.steps[i + 1]?.start ?? this.coords.length - 1;
+      const exitBrg = st.bearingBefore != null
+        ? roundaboutExitBearing(this.coords, st.start ?? 0, toIdx, st.drivingSide)
+        : null;
+      if (exitBrg != null) st.exitAngle = angleDiff(st.bearingBefore, exitBrg);
+      else if (MOD_ANGLE[st.modifier] != null) st.exitAngle = MOD_ANGLE[st.modifier];
+      else if (st.exit) st.exitAngle = [-90, 0, 90, 180][Math.min(3, st.exit - 1)];
+      else st.exitAngle = 0;
     }
     this.announced = this.steps.filter(isAnnounced);
     this.vias = this._projectVias(data.vias || []);

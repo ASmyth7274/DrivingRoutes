@@ -300,6 +300,8 @@ button { cursor: pointer; touch-action: manipulation; }
 .actions .row-btns .btn { font-size: 15px; }
 
 .desc { margin: 4px 18px 0; color: var(--muted); line-height: 1.45; font-size: 15px; }
+.check-line { display: flex; align-items: center; gap: 6px; margin: 8px 18px 0; color: var(--ok); font-size: 14px; font-weight: 650; }
+.check-line svg { width: 16px; height: 16px; }
 
 .steps-list { list-style: none; margin: 0; padding: 0; }
 .steps-list li {
@@ -363,6 +365,7 @@ button { cursor: pointer; touch-action: manipulation; }
   align-items: center;
   min-height: calc(var(--safe-top) + 110px);
 }
+.banner { position: relative; }
 .banner.off { --banner-bg: var(--banner-off); }
 .banner.idle { --banner-bg: #33415c; }
 .banner .icon { width: 78px; height: 78px; color: #fff; display: grid; place-items: center; }
@@ -387,6 +390,26 @@ button { cursor: pointer; touch-action: manipulation; }
 .lane { width: 40px; height: 40px; }
 .lane.on { color: #fff; }
 .lane.off { color: rgba(255, 255, 255, .35); }
+
+/* Empties as you get close to the turn, like a car sat nav. */
+.countdown {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 5px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .25);
+  overflow: hidden;
+}
+.countdown i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #fff;
+  transform-origin: left center;
+  transition: transform 1s linear;
+}
 
 .then {
   display: inline-flex;

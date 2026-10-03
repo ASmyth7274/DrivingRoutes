@@ -1,17 +1,7 @@
 // SVG manoeuvre arrows (UK: roundabouts go clockwise, U-turns swing right)
 // and lane guidance arrows.
 
-import { angleDiff } from '../lib/geo.js';
-
-const MOD_ANGLE = {
-  'straight': 0,
-  'slight right': 40,
-  'right': 90,
-  'sharp right': 140,
-  'slight left': -40,
-  'left': -90,
-  'sharp left': -140,
-};
+import { MOD_ANGLE, roundaboutAngle } from '../nav/route-model.js';
 
 function pt(cx, cy, r, deg) {
   const a = (deg * Math.PI) / 180;
@@ -59,33 +49,40 @@ export function uturnArrow() {
 }
 
 /**
- * Roundabout diagram: enter from the bottom, travel clockwise,
- * leave at the exit's real angle.
+ * Roundabout diagram: enter from the bottom, go round clockwise (UK) and
+ * leave at the exit's real angle, with the exit number in the middle.
+ * Everything stays inside the 100x100 box so nothing is clipped.
  */
-export function roundaboutArrow(exitAngle) {
+export function roundaboutArrow(exitAngle, exitNumber = null) {
   const cx = 50;
-  const cy = 46;
-  const r = 17;
-  let theta = exitAngle;
+  const cy = 50;
+  const r = 16;
+  let theta = Number.isFinite(exitAngle) ? exitAngle : 0;
   if (theta <= -175) theta = 180;
-  const a1 = theta + 360; // clockwise from 180 (bottom) to the exit angle
-  const sweep = a1 - 180;
-  const start = pt(cx, cy, r, 180);
-  const exitP = pt(cx, cy, r, theta);
-  const armEnd = pt(cx, cy, r + 22, theta);
-  const headP = pt(cx, cy, r + 26, theta);
+  const back = Math.abs(theta) >= 160;
+  // Going back the way you came you leave on the other side of the road.
+  const entryAt = back ? 205 : 180;
+  const leaveAt = back ? 140 : theta;
+  const dir = back ? 180 : theta;
+  const sweep = ((leaveAt - entryAt) % 360 + 360) % 360 || 360;
+  const start = pt(cx, cy, r, entryAt);
+  const exitP = pt(cx, cy, r, leaveAt);
+  const armEnd = pt(exitP[0], exitP[1], 15, dir);
+  const headP = pt(exitP[0], exitP[1], 19, dir);
+  const f = (n) => n.toFixed(1);
   let arc;
   if (sweep >= 359) {
-    const mid = pt(cx, cy, r, 0);
-    arc = `A${r} ${r} 0 0 1 ${mid[0].toFixed(1)} ${mid[1].toFixed(1)} A${r} ${r} 0 0 1 ${exitP[0].toFixed(1)} ${exitP[1].toFixed(1)}`;
+    const mid = pt(cx, cy, r, entryAt + 180);
+    arc = `A${r} ${r} 0 0 1 ${f(mid[0])} ${f(mid[1])} A${r} ${r} 0 0 1 ${f(exitP[0])} ${f(exitP[1])}`;
   } else {
-    arc = `A${r} ${r} 0 ${sweep > 180 ? 1 : 0} 1 ${exitP[0].toFixed(1)} ${exitP[1].toFixed(1)}`;
+    arc = `A${r} ${r} 0 ${sweep > 180 ? 1 : 0} 1 ${f(exitP[0])} ${f(exitP[1])}`;
   }
   const body = `
     <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="currentColor" stroke-opacity=".3" stroke-width="8"/>
-    <path d="M50 94 L${start[0].toFixed(1)} ${start[1].toFixed(1)} ${arc} L${armEnd[0].toFixed(1)} ${armEnd[1].toFixed(1)}"
+    <path d="M${f(start[0])} 96 L${f(start[0])} ${f(start[1])} ${arc} L${f(armEnd[0])} ${f(armEnd[1])}"
       fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-    ${head(headP[0], headP[1], theta, 16)}`;
+    ${head(headP[0], headP[1], dir, 15)}
+    ${exitNumber ? `<text x="${cx}" y="${cy + 1}" text-anchor="middle" dominant-baseline="central" font-size="18" font-weight="800" font-family="-apple-system, system-ui, sans-serif" fill="currentColor">${Number(exitNumber)}</text>` : ''}`;
   return svg(body);
 }
 
@@ -112,14 +109,8 @@ export function maneuverIcon(step) {
       return arriveIcon();
     case 'roundabout':
     case 'rotary':
-    case 'roundabout turn': {
-      let a = null;
-      if (step.bearingBefore != null && step.bearingAfter != null) a = angleDiff(step.bearingBefore, step.bearingAfter);
-      if (a == null || (step.type === 'roundabout turn' && MOD_ANGLE[mod] != null)) {
-        a = MOD_ANGLE[mod] ?? (step.exit ? [-90, 0, 90, 180][Math.min(3, step.exit - 1)] : 0);
-      }
-      return roundaboutArrow(a);
-    }
+    case 'roundabout turn':
+      return roundaboutArrow(roundaboutAngle(step), step.type === 'roundabout turn' ? null : step.exit);
     case 'fork':
     case 'off ramp':
     case 'on ramp': {

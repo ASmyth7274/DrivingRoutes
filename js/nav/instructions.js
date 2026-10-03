@@ -1,6 +1,7 @@
 // Turns manoeuvres into UK-style sat nav and examiner directions.
 
-import { angleDiff, cardinal } from '../lib/geo.js';
+import { cardinal } from '../lib/geo.js';
+import { roundaboutAngle } from './route-model.js';
 import { ordinal, ordinalWord } from '../lib/units.js';
 
 const MOD_WORD = {
@@ -47,8 +48,7 @@ function towards(step, spoken) {
 
 /** Exit direction relative to the entry, for roundabouts: 'left' | 'straight' | 'right' | 'back'. */
 export function roundaboutDirection(step) {
-  if (step.bearingBefore == null || step.bearingAfter == null) return null;
-  const a = angleDiff(step.bearingBefore, step.bearingAfter);
+  const a = roundaboutAngle(step);
   if (Math.abs(a) > 150) return 'back';
   if (a < -45) return 'left';
   if (a > 45) return 'right';

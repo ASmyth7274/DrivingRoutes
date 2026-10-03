@@ -114,7 +114,6 @@
         { "road": "Station Road", "near": [-1.2080, 52.9200], "radius": 500 },
         { "road": "Trent Road", "near": [-1.2130, 52.9155], "radius": 900 },
         { "road": "Lilac Grove", "near": [-1.2090, 52.9150], "radius": 900 },
-        { "road": "Station Road", "near": [-1.2080, 52.9200], "radius": 500 },
         { "ref": "A6005", "near": [-1.2215, 52.9152], "bearing": 225, "radius": 900 }
       ]
     },

@@ -100,7 +100,7 @@ async function render(app) {
       <button class="btn secondary" data-act="mock">${icon('test')} Mock test</button>
     </div>` : ''}
     <div id="prep-status"></div>
-    ${builtIn.length ? `<div class="section-title"><span>Common test routes</span><span>${builtIn.length}</span></div>` : ''}
+    ${builtIn.length ? `<div class="section-title"><span>${c.practice ? 'Practice routes' : 'Common test routes'}</span><span>${builtIn.length}</span></div>` : ''}
     ${builtIn.map((r) => card(app, r, dataFor.get(r.id))).join('')}
     <div class="section-title"><span>Your routes</span></div>
     ${mine.map((r) => card(app, r, dataFor.get(r.id))).join('') || '<div class="empty">Make your own route by tapping roads on the map, or record one while you drive with your instructor.</div>'}
@@ -111,7 +111,7 @@ async function render(app) {
     <div class="actions" style="margin-top:0">
       <button class="btn secondary block" data-act="loop">${icon('refresh')} Make a practice loop near the centre</button>
     </div>
-    <p class="about">${builtIn.length ? "Routes are based on roads commonly reported around this test centre. DVSA doesn't publish test routes, so your test may differ. " : ''}Always follow road signs, markings and your examiner over the app.</p>`;
+    <p class="about">${builtIn.length && !c.practice ? "Routes are based on roads commonly reported around this test centre. DVSA doesn't publish test routes, so your test may differ. " : ''}${c.practice ? 'These are practice loops that copy the kinds of road on test routes, not real test routes. ' : ''}Always follow road signs, markings and your examiner over the app.</p>`;
 
   sheet.onclick = (e) => {
     const r = e.target.closest('[data-route]');
@@ -193,6 +193,7 @@ async function randomRoute(app, mock) {
       ],
     });
     if (!ok) return;
+    if (app.voice.enabled) app.voice.prime('Starting mock test.');
     app.show('preview', { routeId: r.id, autostart: ok === 'start' ? 'drive' : 'sim', mock: true, hideName: true });
   } else {
     toast(`Random pick: ${r.name}`);

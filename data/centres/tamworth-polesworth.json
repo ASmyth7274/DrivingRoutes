@@ -1,0 +1,190 @@
+{
+  "id": "tamworth-polesworth",
+  "name": "Tamworth & Polesworth",
+  "practice": true,
+  "address": "Practice area · routes start at Tamworth station or Polesworth High Street",
+  "location": [-1.6869, 52.6374],
+  "destinationName": "Tamworth station",
+  "about": "Tamworth no longer has its own driving test centre, so these are practice loops built to copy the mix of roads in the Chilwell routes: a multi-lane roundabout (the Egg), 70 mph on the A5, a motorway junction roundabout (M42 junction 10), town-centre driving, village streets and quiet estates.",
+  "tips": [
+    "Learners from Tamworth and Polesworth usually take their test at Lichfield, Sutton Coldfield or Nuneaton. Add your real centre in Test centres when you know it.",
+    "The Egg is five mini roundabouts linked into one big ring. Treat each one on its own: give way to the right, then signal for the next.",
+    "If you start a route somewhere else, the app offers to take you to the start first, or to join the route nearest to you."
+  ],
+  "hotspots": [
+    {
+      "title": "The Egg roundabout",
+      "at": [-1.6885, 52.6305],
+      "radius": 350,
+      "text": "The Egg ahead. Take each mini roundabout on its own and give way to traffic from the right."
+    },
+    {
+      "title": "M42 junction 10",
+      "at": [-1.6404, 52.6076],
+      "radius": 400,
+      "text": "Motorway junction roundabout ahead, with traffic lights. Get into the right lane early."
+    },
+    {
+      "title": "Bonehill roundabout",
+      "at": [-1.7100, 52.6235],
+      "radius": 400,
+      "text": "Bonehill roundabout ahead. Multi-lane with traffic lights, so check the lane markings."
+    },
+    {
+      "title": "Ventura Park",
+      "at": [-1.7040, 52.6250],
+      "radius": 400,
+      "text": "Ventura Park. Busy retail roundabouts and people crossing between the shops."
+    },
+    {
+      "title": "Polesworth village",
+      "at": [-1.6135, 52.6200],
+      "radius": 220,
+      "text": "Narrow village streets with parked cars. Be ready to give way to oncoming traffic."
+    }
+  ],
+  "routes": [
+    {
+      "id": "egg-riverdrive-a5",
+      "name": "The Egg, Riverdrive & the A5",
+      "popularity": 5,
+      "estMinutes": 30,
+      "tags": ["The Egg", "A5 70 mph", "Dual carriageway", "Multi-lane roundabouts"],
+      "description": "Like Chilwell's Bardills Island and A52 route: through the Egg (once voted one of Britain's worst roundabouts) and down the Riverdrive dual carriageway, out on Bonehill Road, along the 70 mph A5, then back through Stonydelph and Glascote.",
+      "start": [-1.6869, 52.6374],
+      "end": [-1.6869, 52.6374],
+      "destinationName": "Tamworth station",
+      "waypoints": [
+        { "road": "Ankerdrive", "near": [-1.6885, 52.6310], "radius": 700 },
+        { "ref": "A51", "near": [-1.6990, 52.6268], "bearing": 240, "radius": 900 },
+        { "ref": "A453", "near": [-1.7110, 52.6180], "radius": 1200 },
+        { "ref": "A5", "near": [-1.6800, 52.6080], "bearing": 95, "radius": 1500 },
+        { "ref": "B5080", "near": [-1.6500, 52.6150], "radius": 1200 },
+        { "ref": "B5000", "near": [-1.6780, 52.6262], "bearing": 280, "radius": 900 }
+      ]
+    },
+    {
+      "id": "tamworth-town",
+      "name": "Tamworth town centre",
+      "popularity": 5,
+      "estMinutes": 20,
+      "tags": ["Town centre", "One-way streets", "Bus stops", "Pedestrians"],
+      "description": "Like the Beeston town route: Upper Gungate, Aldergate and Lichfield Street, round the Egg and back by Albert Road. Plenty of junctions, crossings, buses and people.",
+      "start": [-1.6869, 52.6374],
+      "end": [-1.6869, 52.6374],
+      "destinationName": "Tamworth station",
+      "waypoints": [
+        { "ref": "A513", "near": [-1.6935, 52.6378], "radius": 600 },
+        { "road": "Aldergate", "near": [-1.6955, 52.6348], "radius": 500 },
+        { "road": "Lichfield Street", "near": [-1.6990, 52.6330], "radius": 500 },
+        { "road": "Ankerdrive", "near": [-1.6885, 52.6310], "radius": 700 },
+        { "road": "Albert Road", "near": [-1.6890, 52.6362], "radius": 500 }
+      ]
+    },
+    {
+      "id": "polesworth-m42-j10",
+      "name": "M42 junction 10, Dordon & Polesworth",
+      "popularity": 5,
+      "estMinutes": 30,
+      "tags": ["M42 J10 roundabout", "A5 70 mph", "Dordon", "B5000"],
+      "description": "Like the M1 junction 25 route from Chilwell: out of Polesworth on Grendon Road, west along the A5 through the big M42 junction 10 roundabout, up Pennine Way and back to Polesworth on the B5000.",
+      "start": [-1.6122, 52.6192],
+      "end": [-1.6122, 52.6192],
+      "destinationName": "Polesworth",
+      "waypoints": [
+        { "ref": "B5000", "near": [-1.6000, 52.6120], "radius": 1200 },
+        { "ref": "A5", "near": [-1.6050, 52.6000], "bearing": 270, "radius": 1500 },
+        { "ref": "A5", "near": [-1.6550, 52.6080], "bearing": 270, "radius": 1500 },
+        { "ref": "B5080", "near": [-1.6500, 52.6150], "radius": 1200 },
+        { "ref": "B5000", "near": [-1.6400, 52.6220], "bearing": 80, "radius": 1200 }
+      ]
+    },
+    {
+      "id": "ventura-bonehill",
+      "name": "Ventura Park & Bonehill roundabout",
+      "popularity": 4,
+      "estMinutes": 25,
+      "tags": ["Ventura Park", "Bonehill roundabout", "Traffic lights", "Retail traffic"],
+      "description": "Like Chilwell's Cator Lane and Bramcote Island route: busy Ventura Park roundabouts, the multi-lane Bonehill roundabout with traffic lights, and back along Riverdrive to the Egg.",
+      "start": [-1.6869, 52.6374],
+      "end": [-1.6869, 52.6374],
+      "destinationName": "Tamworth station",
+      "waypoints": [
+        { "road": "Ankerdrive", "near": [-1.6885, 52.6310], "radius": 700 },
+        { "road": "Bitterscote Drive", "near": [-1.6995, 52.6282], "radius": 700 },
+        { "road": "Ventura Park Road", "near": [-1.7045, 52.6245], "radius": 800 },
+        { "ref": "A453", "near": [-1.7110, 52.6200], "radius": 1200 },
+        { "ref": "A51", "near": [-1.6990, 52.6268], "bearing": 60, "radius": 900 }
+      ]
+    },
+    {
+      "id": "polesworth-village-dordon",
+      "name": "Polesworth village & Dordon",
+      "popularity": 4,
+      "estMinutes": 15,
+      "tags": ["Village streets", "Parked cars", "Manoeuvres", "Quiet roads"],
+      "description": "Like the Chilwell estates route: Polesworth's narrow streets by the abbey and river, up to the station and down into Dordon. Good for meeting traffic, parked cars and practising manoeuvres.",
+      "start": [-1.6122, 52.6192],
+      "end": [-1.6122, 52.6192],
+      "destinationName": "Polesworth",
+      "waypoints": [
+        { "road": "Station Road", "near": [-1.6110, 52.6235], "radius": 600 },
+        { "road": "Bridge Street", "near": [-1.6140, 52.6205], "radius": 600 },
+        { "road": "Long Street", "near": [-1.6150, 52.6040], "radius": 900 }
+      ]
+    },
+    {
+      "id": "glascote-amington-estates",
+      "name": "Glascote, Stonydelph & Amington",
+      "popularity": 4,
+      "estMinutes": 25,
+      "tags": ["Estates", "Mini roundabouts", "Parked cars", "Manoeuvres"],
+      "description": "Like Beeston Rylands: estate roads in Glascote, Stonydelph and Amington with mini roundabouts, side roads and parked cars. Likely places for a manoeuvre or the emergency stop.",
+      "start": [-1.6869, 52.6374],
+      "end": [-1.6869, 52.6374],
+      "destinationName": "Tamworth station",
+      "waypoints": [
+        { "ref": "B5000", "near": [-1.6780, 52.6262], "bearing": 100, "radius": 900 },
+        { "ref": "B5440", "near": [-1.6640, 52.6200], "radius": 1000 },
+        { "road": "Mercian Way", "near": [-1.6520, 52.6200], "radius": 1200 },
+        { "road": "Amington Road", "near": [-1.6740, 52.6345], "radius": 900 }
+      ]
+    },
+    {
+      "id": "polesworth-b5000-egg",
+      "name": "Polesworth to the Egg & the A5",
+      "popularity": 3,
+      "estMinutes": 35,
+      "tags": ["Country B road", "The Egg", "A5 70 mph", "M42 J10"],
+      "description": "Like the Stapleford route: the B5000 from Polesworth into Tamworth, round the Egg and Riverdrive, then home along the A5 through M42 junction 10 and Dordon.",
+      "start": [-1.6122, 52.6192],
+      "end": [-1.6122, 52.6192],
+      "destinationName": "Polesworth",
+      "waypoints": [
+        { "ref": "B5000", "near": [-1.6400, 52.6220], "bearing": 270, "radius": 1200 },
+        { "ref": "B5000", "near": [-1.6780, 52.6262], "bearing": 280, "radius": 900 },
+        { "road": "Ankerdrive", "near": [-1.6885, 52.6310], "radius": 700 },
+        { "ref": "A51", "near": [-1.6990, 52.6268], "bearing": 240, "radius": 900 },
+        { "ref": "A5", "near": [-1.6800, 52.6080], "bearing": 95, "radius": 1500 },
+        { "ref": "A5", "near": [-1.6250, 52.6040], "bearing": 95, "radius": 1500 }
+      ]
+    },
+    {
+      "id": "wilnecote-two-gates",
+      "name": "Wilnecote & Two Gates",
+      "popularity": 3,
+      "estMinutes": 25,
+      "tags": ["Old Watling Street", "Junctions", "Bus routes", "Residential"],
+      "description": "Like the Toton route: along the old Watling Street through Two Gates and Wilnecote, with plenty of side roads and bus stops, then up Marlborough Way through Glascote.",
+      "start": [-1.6869, 52.6374],
+      "end": [-1.6869, 52.6374],
+      "destinationName": "Tamworth station",
+      "waypoints": [
+        { "ref": "B5404", "near": [-1.6880, 52.6150], "radius": 1300 },
+        { "ref": "B5404", "near": [-1.6700, 52.6060], "radius": 1300 },
+        { "ref": "B5440", "near": [-1.6640, 52.6150], "radius": 1200 },
+        { "ref": "B5000", "near": [-1.6780, 52.6262], "bearing": 280, "radius": 900 }
+      ]
+    }
+  ]
+}
