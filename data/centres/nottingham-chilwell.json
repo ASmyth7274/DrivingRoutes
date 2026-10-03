@@ -1,0 +1,171 @@
+{
+  "id": "nottingham-chilwell",
+  "name": "Nottingham (Chilwell)",
+  "address": "Unit 24, Eldon Business Park, Eldon Road, Chilwell NG9 6DZ",
+  "location": [-1.2383, 52.9047],
+  "destinationName": "the test centre",
+  "about": "Opened in 2016 to replace the old Beeston centre. Routes head west towards Toton, Stapleford, Sandiacre and Long Eaton, or east towards Attenborough, Beeston and Bramcote.",
+  "tips": [
+    "The car park is small (about seven bays) and the access road off Eldon Road is shared with other businesses, so expect vans and lorries.",
+    "You leave the centre at a traffic-light crossroads on the A6005, so the first junction of every test is a busy one.",
+    "DVSA doesn't publish test routes. Practise the kinds of road here (big multi-lane roundabouts, the 70 mph A52, tram crossings, town centres and estates) rather than learning one route by heart."
+  ],
+  "hotspots": [
+    {
+      "title": "Bardills Island",
+      "at": [-1.2645, 52.9205],
+      "radius": 350,
+      "text": "Bardills Island ahead. Read the lane signs early and keep to your lane all the way round."
+    },
+    {
+      "title": "Bramcote Island",
+      "at": [-1.2400, 52.9310],
+      "radius": 400,
+      "text": "Bramcote Island ahead. The lane markings here catch a lot of learners out, so follow them carefully."
+    },
+    {
+      "title": "Tram crossing, Cator Lane",
+      "at": [-1.2315, 52.9226],
+      "radius": 120,
+      "text": "Tram crossing ahead. Never stop on the tracks."
+    },
+    {
+      "title": "Tram crossing, Bramcote Lane",
+      "at": [-1.2366, 52.9216],
+      "radius": 120,
+      "text": "Tram crossing ahead. Never stop on the tracks."
+    },
+    {
+      "title": "Tram crossing, Inham Road",
+      "at": [-1.2515, 52.9196],
+      "radius": 120,
+      "text": "Tram crossing ahead. Never stop on the tracks."
+    },
+    {
+      "title": "Trams on Chilwell Road",
+      "at": [-1.2215, 52.9222],
+      "radius": 200,
+      "text": "Trams share the road here. Watch for tram stops, cyclists and people crossing."
+    },
+    {
+      "title": "Level crossing, Beeston station",
+      "at": [-1.2080, 52.9208],
+      "radius": 150,
+      "text": "Level crossing ahead. Stop at the white line if the lights flash."
+    }
+  ],
+  "routes": [
+    {
+      "id": "bardills-a52",
+      "name": "Bardills Island & the A52",
+      "popularity": 5,
+      "estMinutes": 32,
+      "tags": ["Bardills Island", "A52 70 mph", "Bramcote Island", "Stapleford"],
+      "description": "Out through Toton to Bardills Island, along the 70 mph A52 to Bramcote Island, back through Stapleford's town-centre crossroads and round Bardills again. Plenty of lane discipline on big roundabouts.",
+      "waypoints": [
+        { "ref": "A6005", "near": [-1.2455, 52.9062], "from": "Barton Lane", "to": "B6003", "bearing": 260, "radius": 800 },
+        { "ref": "B6003", "near": [-1.2545, 52.9105], "from": "A6005", "to": "A52", "bearing": 330, "radius": 900 },
+        { "ref": "A52", "near": [-1.2520, 52.9258], "bearing": 55, "radius": 900 },
+        { "ref": "B5010", "near": [-1.2560, 52.9330], "bearing": 265, "radius": 1000 },
+        { "ref": "B6003", "near": [-1.2668, 52.9262], "bearing": 160, "radius": 800 },
+        { "ref": "B6003", "near": [-1.2580, 52.9135], "bearing": 150, "radius": 800 }
+      ]
+    },
+    {
+      "id": "chilwell-beeston",
+      "name": "Chilwell High Road & Beeston",
+      "popularity": 5,
+      "estMinutes": 28,
+      "tags": ["Trams", "Town centre", "Bus stops", "Attenborough Lane"],
+      "description": "Up Attenborough Lane to the old Chilwell High Road, then Chilwell Road into Beeston alongside the trams, and back along Queens Road and the A6005. Busy town driving with bus stops, crossings and cyclists.",
+      "waypoints": [
+        { "ref": "A6005", "near": [-1.2345, 52.9082], "from": "Barton Lane", "to": "Attenborough Lane", "bearing": 70, "radius": 800 },
+        { "road": "Attenborough Lane", "near": [-1.2300, 52.9135], "from": "A6005", "to": "High Road", "bearing": 0, "radius": 700 },
+        { "road": "High Road", "near": [-1.2250, 52.9196], "bearing": 60, "radius": 500 },
+        { "road": "Chilwell Road", "near": [-1.2190, 52.9233], "bearing": 55, "radius": 500 },
+        { "road": "Station Road", "near": [-1.2110, 52.9228], "radius": 500 },
+        { "ref": "A6005", "near": [-1.2215, 52.9152], "bearing": 225, "radius": 900 }
+      ]
+    },
+    {
+      "id": "cator-bramcote",
+      "name": "Cator Lane, Bramcote Island & the A52",
+      "popularity": 4,
+      "estMinutes": 32,
+      "tags": ["Bramcote Island", "Tram crossing", "Speed changes", "A52 70 mph"],
+      "description": "Attenborough Lane and Cator Lane over the tram line, through Bramcote to the notoriously confusing Bramcote Island, then west on the A52 to Bardills Island and home through Toton.",
+      "waypoints": [
+        { "ref": "A6005", "near": [-1.2345, 52.9082], "from": "Barton Lane", "to": "Attenborough Lane", "bearing": 70, "radius": 800 },
+        { "road": "Attenborough Lane", "near": [-1.2300, 52.9135], "from": "A6005", "to": "High Road", "bearing": 0, "radius": 700 },
+        { "road": "Cator Lane", "near": [-1.2315, 52.9235], "bearing": 0, "radius": 600 },
+        { "ref": "A52", "near": [-1.2520, 52.9258], "bearing": 235, "radius": 900 },
+        { "ref": "B6003", "near": [-1.2580, 52.9135], "bearing": 150, "radius": 800 }
+      ]
+    },
+    {
+      "id": "beeston-rylands",
+      "name": "Beeston Rylands & the level crossing",
+      "popularity": 4,
+      "estMinutes": 30,
+      "tags": ["Residential", "Level crossing", "20 mph zone", "Manoeuvres"],
+      "description": "Along the A6005 to Beeston, over the railway by Beeston station and round the quiet Rylands estate, a likely place for a reversing manoeuvre or the emergency stop, then back past Chilwell Olympia.",
+      "waypoints": [
+        { "ref": "A6005", "near": [-1.2215, 52.9152], "bearing": 45, "radius": 900 },
+        { "road": "Station Road", "near": [-1.2080, 52.9200], "radius": 500 },
+        { "road": "Trent Road", "near": [-1.2130, 52.9155], "radius": 900 },
+        { "road": "Lilac Grove", "near": [-1.2090, 52.9150], "radius": 900 },
+        { "road": "Station Road", "near": [-1.2080, 52.9200], "radius": 500 },
+        { "ref": "A6005", "near": [-1.2215, 52.9152], "bearing": 225, "radius": 900 }
+      ]
+    },
+    {
+      "id": "j25-sandiacre",
+      "name": "M1 junction 25, Sandiacre & Stapleford",
+      "popularity": 3,
+      "estMinutes": 38,
+      "tags": ["M1 J25 roundabout", "A52 70 mph", "Sandiacre", "Stapleford"],
+      "description": "West on the A52 to the big M1 junction 25 roundabout, up Bostocks Lane into Sandiacre, back along Derby Road through Stapleford and down Toton Lane to Bardills Island.",
+      "waypoints": [
+        { "ref": "A6005", "near": [-1.2455, 52.9062], "from": "Barton Lane", "to": "B6003", "bearing": 260, "radius": 800 },
+        { "ref": "B6003", "near": [-1.2545, 52.9105], "from": "A6005", "to": "A52", "bearing": 330, "radius": 900 },
+        { "ref": "A52", "near": [-1.2800, 52.9185], "bearing": 265, "radius": 1200 },
+        { "road": "Bostocks Lane", "near": [-1.2960, 52.9190], "radius": 1200 },
+        { "ref": "B5010", "near": [-1.2810, 52.9270], "bearing": 60, "radius": 1200 },
+        { "ref": "B6003", "near": [-1.2668, 52.9262], "bearing": 160, "radius": 800 },
+        { "ref": "B6003", "near": [-1.2580, 52.9135], "bearing": 150, "radius": 800 }
+      ]
+    },
+    {
+      "id": "stapleford-ilkeston-road",
+      "name": "Stapleford & Ilkeston Road",
+      "popularity": 3,
+      "estMinutes": 34,
+      "tags": ["Stapleford", "Bramcote Island", "Bardills Island", "A52 70 mph"],
+      "description": "Through Bardills Island to Stapleford's town-centre crossroads, north up Church Street, then Ilkeston Road down to Bramcote Island and the A52 back to Bardills.",
+      "waypoints": [
+        { "ref": "A6005", "near": [-1.2455, 52.9062], "from": "Barton Lane", "to": "B6003", "bearing": 260, "radius": 800 },
+        { "ref": "B6003", "near": [-1.2545, 52.9105], "from": "A6005", "to": "A52", "bearing": 330, "radius": 900 },
+        { "ref": "B6003", "near": [-1.2668, 52.9262], "bearing": 340, "radius": 800 },
+        { "road": "Church Street", "near": [-1.2720, 52.9365], "bearing": 0, "radius": 700 },
+        { "ref": "A6007", "near": [-1.2560, 52.9385], "bearing": 120, "radius": 1200 },
+        { "ref": "A52", "near": [-1.2520, 52.9258], "bearing": 235, "radius": 900 },
+        { "ref": "B6003", "near": [-1.2580, 52.9135], "bearing": 150, "radius": 800 }
+      ]
+    },
+    {
+      "id": "chilwell-estates",
+      "name": "Chilwell & Toton estates",
+      "popularity": 3,
+      "estMinutes": 22,
+      "tags": ["Residential", "Manoeuvres", "Tram crossings", "Parked cars"],
+      "description": "Quieter estate roads with parked cars, give-way junctions and tram crossings: Swiney Way, Inham Road, Eskdale Drive and Bramcote Lane. Good for practising manoeuvres and pulling up on the right.",
+      "waypoints": [
+        { "road": "Swiney Way", "near": [-1.2410, 52.9110], "radius": 700 },
+        { "road": "Inham Road", "near": [-1.2515, 52.9180], "radius": 700 },
+        { "road": "Eskdale Drive", "near": [-1.2430, 52.9195], "radius": 600 },
+        { "road": "Bramcote Lane", "near": [-1.2366, 52.9200], "bearing": 180, "radius": 600 },
+        { "road": "High Road", "near": [-1.2345, 52.9166], "bearing": 250, "radius": 400 }
+      ]
+    }
+  ]
+}

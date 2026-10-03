@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "centres": [
+    { "id": "nottingham-chilwell", "file": "nottingham-chilwell.json" }
+  ]
+}

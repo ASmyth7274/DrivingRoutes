@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Test Routes</title>
+  <meta name="description" content="Practise driving test routes with sat nav style turn-by-turn directions.">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Test Routes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="vendor/maplibre-gl/maplibre-gl.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script src="vendor/maplibre-gl/maplibre-gl.js"></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <div id="map" aria-label="Map"></div>
+  <main id="sheet" class="sheet" aria-live="polite"></main>
+  <section id="nav" hidden></section>
+  <section id="page" class="page" hidden></section>
+  <div id="overlay"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <noscript>
+    <p style="padding:20px">This app needs JavaScript turned on.</p>
+  </noscript>
+</body>
+</html>
