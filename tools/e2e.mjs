@@ -120,7 +120,28 @@ function fakeTrace(url) {
   };
 }
 
-const STYLE = (bg) => ({ version: 8, sources: {}, layers: [{ id: 'bg', type: 'background', paint: { 'background-color': bg } }] });
+// Layer order modelled on OpenFreeMap's styles: the night map has a label
+// layer before its roads, the day map one-way arrows between roads and bridges.
+const STYLE = (bg) => {
+  const layer = (id, type, sourceLayer) => ({ id, type, source: 'openmaptiles', 'source-layer': sourceLayer });
+  return {
+    version: 8,
+    sources: { openmaptiles: { type: 'vector', tiles: ['https://tiles.openfreemap.org/planet/test/{z}/{x}/{y}.pbf'], maxzoom: 14 } },
+    layers: [
+      { id: 'background', type: 'background', paint: { 'background-color': bg } },
+      layer('water', 'fill', 'water'),
+      layer('water_name', 'symbol', 'water_name'),
+      layer('building', 'fill', 'building'),
+      layer('road_minor', 'line', 'transportation'),
+      layer('road_one_way_arrow', 'symbol', 'transportation'),
+      layer('bridge_street', 'line', 'transportation'),
+      layer('building-3d', 'fill-extrusion', 'building'),
+      layer('boundary', 'line', 'boundary'),
+      layer('highway_name', 'symbol', 'transportation_name'),
+      layer('place_town', 'symbol', 'place'),
+    ],
+  };
+};
 
 async function handle(route) {
   const req = route.request();
@@ -131,6 +152,7 @@ async function handle(route) {
     case 'tiles.openfreemap.org':
       if (url.pathname.startsWith('/styles/dark')) return json(STYLE('#1d2433'));
       if (url.pathname.startsWith('/styles/')) return json(STYLE('#e8eaed'));
+      if (url.pathname.startsWith('/planet/')) return route.fulfill({ status: 200, contentType: 'application/x-protobuf', headers: { 'Access-Control-Allow-Origin': '*' }, body: '' });
       return route.fulfill({ status: 404, body: '' });
     case 'router.project-osrm.org':
       if (url.pathname.startsWith('/nearest/')) {
@@ -153,6 +175,10 @@ async function handle(route) {
 // ---------- run ----------
 const failures = [];
 const check = (cond, msg) => { if (!cond) { failures.push(msg); console.error('FAIL:', msg); } else console.log('ok:', msg); };
+// Icons that have lost their size (outside the map, which has its own markers).
+const hugeIcons = (pg) => pg.evaluate(() => [...document.querySelectorAll('svg')]
+  .filter((svg) => !svg.closest('.maplibregl-map') && svg.getBoundingClientRect().width > 80)
+  .map((svg) => `${svg.parentElement.tagName.toLowerCase()}.${svg.parentElement.className} ${Math.round(svg.getBoundingClientRect().width)}px`));
 
 const browser = await playwright.chromium.launch({
   executablePath: process.env.CHROMIUM || '/opt/pw-browsers/chromium',
@@ -206,6 +232,12 @@ await page.waitForTimeout(800);
 await shot('03-preview');
 check(await page.locator('.steps-list li').count() > 3, 'preview shows turn-by-turn list');
 check(await page.locator('.steps-list svg text').count() > 0, 'roundabout icons show the exit number');
+const order = await page.evaluate(() => {
+  const ids = window.__app.map.map.getStyle().layers.map((l) => l.id);
+  return { route: ids.indexOf('dtr-route'), outlines: ids.indexOf('dtr-alt'), lastBase: ids.indexOf('building-3d'), names: ids.indexOf('highway_name') };
+});
+check(order.outlines > order.lastBase && order.route > order.lastBase && order.route < order.names,
+  `route is drawn above roads and buildings, below road names (layers ${JSON.stringify(order)})`);
 const noUturns = await page.locator('.check-line', { hasText: 'No U-turns' }).count();
 const uturnWarnings = await page.locator('.note-box.warn', { hasText: 'U-turn' }).count();
 check(noUturns + uturnWarnings > 0, `route screen reports U-turns (${noUturns ? 'none' : `${uturnWarnings} flagged`})`);
@@ -262,6 +294,11 @@ await page.locator('[data-act="settings"]').click();
 await page.waitForSelector('.page-head');
 await page.waitForTimeout(400);
 await shot('08-settings');
+const settingsIcons = await hugeIcons(page);
+check(!settingsIcons.length, `settings icons are a normal size${settingsIcons.length ? ` (huge: ${settingsIcons.join(', ')})` : ''}`);
+await page.locator('[data-act="reset"]').scrollIntoViewIfNeeded();
+await page.waitForTimeout(300);
+await shot('08b-settings-bottom');
 await page.locator('[data-seg="voiceStyle"] button[data-v="examiner"]').click();
 check(await page.evaluate(() => JSON.parse(localStorage.getItem('dtr:v1')).settings.voiceStyle) === 'examiner', 'settings saved');
 await page.locator('[data-act="back"]').click();
@@ -311,6 +348,10 @@ check(/My test loop/.test(await page.locator('.preview-head h2').textContent()),
 // Tamworth & Polesworth practice area
 await page.locator('[data-act="back"]').first().click();
 await page.waitForSelector('.centre-chip');
+await page.waitForTimeout(500);
+const homeIcons = await hugeIcons(page);
+check(!homeIcons.length, `home icons, including your own route's badge, are a normal size${homeIcons.length ? ` (huge: ${homeIcons.join(', ')})` : ''}`);
+await shot('12b-home-custom-route');
 await page.locator('.centre-chip').click();
 await page.locator('[data-centre="tamworth-polesworth"]').click();
 await page.waitForSelector('.route-card', { timeout: 15000 });

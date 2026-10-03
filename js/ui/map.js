@@ -28,6 +28,9 @@ const RASTER_FALLBACK = {
 
 const EMPTY = { type: 'FeatureCollection', features: [] };
 
+// Map style layers (OpenMapTiles schema) that draw roads, bridges, runways and buildings.
+const BASE_GEOMETRY = new Set(['transportation', 'building', 'aeroway']);
+
 function line(coords, props = {}) {
   if (!coords || coords.length < 2) return EMPTY;
   return { type: 'FeatureCollection', features: [{ type: 'Feature', properties: props, geometry: { type: 'LineString', coordinates: coords } }] };
@@ -132,9 +135,23 @@ export class MapView extends Emitter {
     this.map?.resize();
   }
 
-  _firstSymbolLayer() {
+  /**
+   * Route lines go above every road, bridge and building, but under the
+   * names. "Under the first label" isn't enough: the night map has a water
+   * label before its roads, which put routes underneath every street.
+   */
+  _routeLayerBefore() {
     const layers = this.map.getStyle()?.layers || [];
-    return layers.find((l) => l.type === 'symbol')?.id;
+    let last = -1;
+    layers.forEach((l, i) => {
+      if (l.type !== 'symbol' && BASE_GEOMETRY.has(l['source-layer'])) last = i;
+    });
+    if (last < 0) {
+      layers.forEach((l, i) => {
+        if (l.type !== 'symbol' && l.type !== 'background') last = i;
+      });
+    }
+    return layers.slice(last + 1).find((l) => l.type === 'symbol')?.id;
   }
 
   _ensureLayers() {
@@ -143,7 +160,7 @@ export class MapView extends Emitter {
     for (const [id, data] of Object.entries(this.data)) {
       if (!m.getSource(`dtr-${id}`)) m.addSource(`dtr-${id}`, { type: 'geojson', data });
     }
-    const before = this._firstSymbolLayer();
+    const before = this._routeLayerBefore();
     const add = (layer, beforeId) => { if (!m.getLayer(layer.id)) m.addLayer(layer, beforeId); };
     add({ id: 'dtr-alt', type: 'line', source: 'dtr-alt', layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: { 'line-color': ['coalesce', ['get', 'color'], '#5b8def'], 'line-width': 4, 'line-opacity': 0.55 } }, before);
