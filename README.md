@@ -55,7 +55,7 @@ The routes are written like an examiner's route card: "Barton Lane between Notti
 
 ## The Tamworth & Polesworth practice routes
 
-Tamworth doesn't have its own test centre, so these are practice loops rather than test routes. Each one copies the mix of roads in one of the Chilwell routes: the Egg instead of Bardills Island, the A5 instead of the A52, M42 junction 10 instead of M1 junction 25, and Polesworth's village streets instead of the Chilwell estates. They start and finish at Tamworth station or in Polesworth.
+These are practice loops, not test routes. Each one copies the mix of roads in one of the Chilwell routes: the Egg instead of Bardills Island, the A5 instead of the A52, M42 junction 10 instead of M1 junction 25, and Polesworth's village streets instead of the Chilwell estates. They start and finish at Tamworth station or in Polesworth.
 
 | # | Route | Starts | What it covers |
 |---|-------|--------|----------------|
@@ -91,7 +91,7 @@ Add a JSON file to `data/centres/`, list it in `data/centres/index.json`, and ad
 { "at": [-1.2383, 52.9047] }                                                             // an exact point
 ```
 
-`near` only needs to be within `radius` metres (default 700) of the stretch you mean. Centres can also have `hotspots` (spoken warnings when you get close) and `tips`. A practice area with no test centre sets `"practice": true`, and its routes can each set `start`, `end` and `destinationName` (see `data/centres/tamworth-polesworth.json`).
+`near` only needs to be within `radius` metres (default 700) of the stretch you mean. Centres can also have `hotspots` (spoken warnings when you get close) and `tips`. A practice area (routes that don't start from a test centre) sets `"practice": true`, and its routes can each set `start`, `end` and `destinationName` (see `data/centres/tamworth-polesworth.json`).
 
 ## How it works
 
