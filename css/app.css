@@ -831,6 +831,18 @@ button { cursor: pointer; touch-action: manipulation; }
 .result-list .t { font-weight: 650; }
 .result-list .s { color: var(--muted); font-size: 13px; margin-top: 2px; }
 
+/* Keeps the white iOS status bar (time, battery) readable over light screens. */
+.status-scrim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--safe-top);
+  background: linear-gradient(rgba(0, 0, 0, .42), rgba(0, 0, 0, .12));
+  pointer-events: none;
+  z-index: 70;
+}
+
 /* ---------- Landscape (phone on its side in a car mount) ---------- */
 
 @media (orientation: landscape) and (max-height: 540px) {
