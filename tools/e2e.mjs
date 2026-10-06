@@ -238,6 +238,20 @@ const order = await page.evaluate(() => {
 });
 check(order.outlines > order.lastBase && order.route > order.lastBase && order.route < order.names,
   `route is drawn above roads and buildings, below road names (layers ${JSON.stringify(order)})`);
+// "Edit a copy" of a built-in route opens with its waypoints
+const editCopy = async (label) => {
+  await page.locator('[data-act="menu"]').click();
+  await page.locator('.modal .btn', { hasText: 'Edit a copy' }).click();
+  await page.waitForSelector('#ed-panel .wp-list li', { timeout: 10000 });
+  const names = await page.locator('.wp-list li .r').allTextContents();
+  const markers = await page.locator('.maplibregl-marker.wp').count();
+  check(names.length >= 2 && markers === names.length && !names.includes('Unnamed road'),
+    `"Edit a copy" of ${label} shows its ${names.length} waypoints (${names.slice(0, 3).join(', ')}…)`);
+  await page.locator('.editor-top [data-act="back"]').click();
+  await page.waitForSelector('[data-act="drive"]', { timeout: 10000 });
+};
+await editCopy('a traced route');
+await page.waitForTimeout(500);
 const noUturns = await page.locator('.check-line', { hasText: 'No U-turns' }).count();
 const uturnWarnings = await page.locator('.note-box.warn', { hasText: 'U-turn' }).count();
 check(noUturns + uturnWarnings > 0, `route screen reports U-turns (${noUturns ? 'none' : `${uturnWarnings} flagged`})`);
@@ -372,6 +386,11 @@ await page.locator('[data-act="back"]').first().click();
 await page.waitForSelector('.centre-chip');
 await page.locator('.centre-chip').click();
 await page.locator('[data-centre="nottingham-chilwell"]').click();
+await page.waitForSelector('[data-act="mock"]');
+await page.locator('.route-card', { hasText: 'Bardills Island & the A52' }).click();
+await page.waitForSelector('[data-act="drive"]', { timeout: 15000 });
+await editCopy('an older route');
+await page.locator('[data-act="back"]').first().click();
 await page.waitForSelector('[data-act="mock"]');
 await page.locator('[data-act="mock"]').click();
 await page.locator('.modal .btn', { hasText: 'Practice at home' }).click();

@@ -13,19 +13,31 @@
   "hotspots": [
     {
       "title": "Bardills Island",
-      "at": [-1.2645, 52.9205],
+      "at": [-1.2652, 52.9203],
       "radius": 350,
       "text": "Bardills Island ahead. Read the lane signs early and keep to your lane all the way round."
     },
     {
       "title": "Bramcote Island",
-      "at": [-1.2400, 52.9310],
+      "at": [-1.2502, 52.9362],
       "radius": 400,
       "text": "Bramcote Island ahead. The lane markings here catch a lot of learners out, so follow them carefully."
     },
     {
+      "title": "Priory Island",
+      "at": [-1.2165, 52.9389],
+      "radius": 300,
+      "text": "Priory Island ahead. A busy roundabout where the A52 meets Woodside Road, so look well ahead and get in lane early."
+    },
+    {
+      "title": "M1 junction 25",
+      "at": [-1.2996, 52.9159],
+      "radius": 400,
+      "text": "Motorway junction roundabout ahead. It is big and busy, so read the lane signs early and keep to your lane all the way round."
+    },
+    {
       "title": "Tram crossing, Cator Lane",
-      "at": [-1.2315, 52.9226],
+      "at": [-1.2308, 52.9227],
       "radius": 120,
       "text": "Tram crossing ahead. Never stop on the tracks."
     },
@@ -37,7 +49,7 @@
     },
     {
       "title": "Tram crossing, Inham Road",
-      "at": [-1.2515, 52.9196],
+      "at": [-1.2525, 52.9195],
       "radius": 120,
       "text": "Tram crossing ahead. Never stop on the tracks."
     },
@@ -49,16 +61,102 @@
     },
     {
       "title": "Level crossing, Beeston station",
-      "at": [-1.2080, 52.9208],
+      "at": [-1.2072, 52.9210],
       "radius": 150,
       "text": "Level crossing ahead. Stop at the white line if the lights flash."
     }
   ],
   "routes": [
     {
+      "id": "route-11",
+      "name": "Beeston, the A52 & Long Eaton",
+      "popularity": 5,
+      "estMinutes": 40,
+      "tags": ["Route 11", "A52 70 mph", "Long Eaton", "Bostocks Lane"],
+      "description": "Through Beeston on Queens Road to University Boulevard, up Woodside Road to Priory Island, then west on the 70 mph A52 past Bramcote and Bardills Islands to the M1 junction 25 slip road. Down Bostocks Lane into Long Eaton, through Longmoor Road and Petersham Road, and home along Derby Road and the A6005 through Toton.",
+      "startBearing": 340,
+      "waypoints": [
+        { "at": [-1.215771, 52.920306], "bearing": 80, "label": "Queens Road West" },
+        { "at": [-1.213082, 52.936158], "bearing": 293, "label": "Woodside Road" },
+        { "at": [-1.248980, 52.936441], "bearing": 255, "label": "Derby Road" },
+        { "at": [-1.279552, 52.919451], "bearing": 264, "label": "Brian Clough Way" },
+        { "at": [-1.291637, 52.900322], "bearing": 85, "label": "Derby Road" },
+        { "at": [-1.255070, 52.901365], "bearing": 39, "label": "Nottingham Road" }
+      ]
+    },
+    {
+      "id": "route-12",
+      "name": "Bardills, junction 25 & Stapleford",
+      "popularity": 5,
+      "estMinutes": 30,
+      "tags": ["Route 12", "M1 J25 roundabout", "Sandiacre", "Stapleford"],
+      "description": "Swiney Way and Stapleford Lane to Bardills Island, west on the A52 to M1 junction 25, round the big roundabout and up Bostocks Lane into Sandiacre. Back along Derby Road and Station Road through Stapleford, then Brookhill Street and Toton Lane to Bardills and home the way you came.",
+      "startBearing": 340,
+      "waypoints": [
+        { "at": [-1.249839, 52.907968], "bearing": 331, "label": "Swiney Way" },
+        { "at": [-1.279552, 52.919451], "bearing": 264, "label": "Brian Clough Way" },
+        { "at": [-1.288093, 52.922742], "bearing": 115, "label": "Station Road" },
+        { "at": [-1.263029, 52.915473], "bearing": 154, "label": "Stapleford Lane" },
+        { "at": [-1.249839, 52.907968], "bearing": 151, "label": "Swiney Way" }
+      ]
+    },
+    {
+      "id": "route-14",
+      "name": "Beeston, Lenton Abbey & junction 25",
+      "popularity": 5,
+      "estMinutes": 40,
+      "tags": ["Route 14", "A52 70 mph", "M1 J25 roundabout", "Lenton Abbey"],
+      "description": "Through Beeston on Queens Road to University Boulevard, up Woodside Road and through Lenton Abbey (Brook Road, Dennis Avenue, Hillside Road) to the A52. West on the 70 mph A52 through Bramcote and Bardills Islands to M1 junction 25, round the roundabout and back to Bardills, then home down Toton Lane, Stapleford Lane and Swiney Way.",
+      "startBearing": 340,
+      "waypoints": [
+        { "at": [-1.215771, 52.920306], "bearing": 80, "label": "Queens Road West" },
+        { "at": [-1.213082, 52.936158], "bearing": 293, "label": "Woodside Road" },
+        { "at": [-1.221160, 52.936101], "bearing": 268, "label": "Dennis Avenue" },
+        { "at": [-1.228300, 52.937184], "bearing": 353, "label": "Coniston Road" },
+        { "at": [-1.258284, 52.927706], "bearing": 209, "label": "Brian Clough Way" },
+        { "at": [-1.279552, 52.919451], "bearing": 264, "label": "Brian Clough Way" },
+        { "at": [-1.279502, 52.919544], "bearing": 85, "label": "Brian Clough Way" },
+        { "at": [-1.248171, 52.905730], "bearing": 162, "label": "Swiney Way" }
+      ]
+    },
+    {
+      "id": "route-17",
+      "name": "Chilwell, Beeston & Lenton Abbey",
+      "popularity": 5,
+      "estMinutes": 25,
+      "tags": ["Route 17", "Trams", "Town centre", "Priory Island"],
+      "description": "Along the A6005 and Chilwell's High Road beside the trams into Beeston, up Wollaton Road to the A52 and Priory Island, then back through the Lenton Abbey estate (Brook Road, Dennis Avenue, Central Avenue, Marlborough Road) and Humber Road. Home through Beeston and Chilwell, using Meadow Lane and Queens Road West.",
+      "startBearing": 340,
+      "waypoints": [
+        { "at": [-1.220320, 52.922663], "bearing": 46, "label": "Chilwell Road" },
+        { "at": [-1.223888, 52.938111], "bearing": 80, "label": "Derby Road" },
+        { "at": [-1.217871, 52.938880], "bearing": 83, "label": "Derby Road" },
+        { "at": [-1.219140, 52.936082], "bearing": 275, "label": "Dennis Avenue" },
+        { "at": [-1.211947, 52.930218], "bearing": 134, "label": "Marlborough Road" },
+        { "at": [-1.226149, 52.919089], "bearing": 141, "label": "Meadow Lane" }
+      ]
+    },
+    {
+      "id": "route-21",
+      "name": "Bramcote, the A52 & Beeston",
+      "popularity": 5,
+      "estMinutes": 25,
+      "tags": ["Route 21", "Bramcote Island", "A52", "Estates"],
+      "description": "Up Attenborough Lane, School Lane and Bramcote Lane to Bramcote's Town Street and Bramcote Island, then east on the A52 Derby Road. Back through the Lenton Abbey estate and Humber Road into Beeston, and home along Chilwell Road, High Road, Meadow Lane and Queens Road West.",
+      "startBearing": 340,
+      "waypoints": [
+        { "at": [-1.236141, 52.916916], "bearing": 0, "label": "School Lane" },
+        { "at": [-1.248896, 52.935765], "bearing": 308, "label": "Town Street" },
+        { "at": [-1.249566, 52.936489], "bearing": 99, "label": "Derby Road" },
+        { "at": [-1.221160, 52.936101], "bearing": 88, "label": "Dennis Avenue" },
+        { "at": [-1.211947, 52.930218], "bearing": 134, "label": "Marlborough Road" },
+        { "at": [-1.226149, 52.919089], "bearing": 141, "label": "Meadow Lane" }
+      ]
+    },
+    {
       "id": "bardills-a52",
       "name": "Bardills Island & the A52",
-      "popularity": 5,
+      "popularity": 4,
       "estMinutes": 32,
       "tags": ["Bardills Island", "A52 70 mph", "Bramcote Island", "Stapleford"],
       "description": "Out through Toton to Bardills Island, along the 70 mph A52 to Bramcote Island, back through Stapleford's town-centre crossroads and round Bardills again. Plenty of lane discipline on big roundabouts.",
@@ -74,7 +172,7 @@
     {
       "id": "chilwell-beeston",
       "name": "Chilwell High Road & Beeston",
-      "popularity": 5,
+      "popularity": 4,
       "estMinutes": 28,
       "tags": ["Trams", "Town centre", "Bus stops", "Attenborough Lane"],
       "description": "Up Attenborough Lane to the old Chilwell High Road, then Chilwell Road into Beeston alongside the trams, and back along Queens Road and the A6005. Busy town driving with bus stops, crossings and cyclists.",
@@ -90,7 +188,7 @@
     {
       "id": "cator-bramcote",
       "name": "Cator Lane, Bramcote Island & the A52",
-      "popularity": 4,
+      "popularity": 3,
       "estMinutes": 32,
       "tags": ["Bramcote Island", "Tram crossing", "Speed changes", "A52 70 mph"],
       "description": "Attenborough Lane and Cator Lane over the tram line, through Bramcote to the notoriously confusing Bramcote Island, then west on the A52 to Bardills Island and home through Toton.",
@@ -105,7 +203,7 @@
     {
       "id": "beeston-rylands",
       "name": "Beeston Rylands & the level crossing",
-      "popularity": 4,
+      "popularity": 3,
       "estMinutes": 30,
       "tags": ["Residential", "Level crossing", "20 mph zone", "Manoeuvres"],
       "description": "Along the A6005 to Beeston, over the railway by Beeston station and round the quiet Rylands estate, a likely place for a reversing manoeuvre or the emergency stop, then back past Chilwell Olympia.",
@@ -120,7 +218,7 @@
     {
       "id": "j25-sandiacre",
       "name": "M1 junction 25, Sandiacre & Stapleford",
-      "popularity": 3,
+      "popularity": 2,
       "estMinutes": 38,
       "tags": ["M1 J25 roundabout", "A52 70 mph", "Sandiacre", "Stapleford"],
       "description": "West on the A52 to the big M1 junction 25 roundabout, up Bostocks Lane into Sandiacre, back along Derby Road through Stapleford and down Toton Lane to Bardills Island.",
@@ -137,7 +235,7 @@
     {
       "id": "stapleford-ilkeston-road",
       "name": "Stapleford & Ilkeston Road",
-      "popularity": 3,
+      "popularity": 2,
       "estMinutes": 34,
       "tags": ["Stapleford", "Bramcote Island", "Bardills Island", "A52 70 mph"],
       "description": "Through Bardills Island to Stapleford's town-centre crossroads, north up Church Street, then Ilkeston Road down to Bramcote Island and the A52 back to Bardills.",
@@ -154,7 +252,7 @@
     {
       "id": "chilwell-estates",
       "name": "Chilwell & Toton estates",
-      "popularity": 3,
+      "popularity": 2,
       "estMinutes": 22,
       "tags": ["Residential", "Manoeuvres", "Tram crossings", "Parked cars"],
       "description": "Quieter estate roads with parked cars, give-way junctions and tram crossings: Swiney Way, Inham Road, Eskdale Drive and Bramcote Lane. Good for practising manoeuvres and pulling up on the right.",

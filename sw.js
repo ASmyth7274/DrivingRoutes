@@ -1,7 +1,7 @@
 // Service worker: makes the app open with no signal, and keeps map tiles,
 // fonts and styles that have been seen (or downloaded in Settings) for offline use.
 
-const VERSION = '1.1.1';
+const VERSION = '1.1.2';
 const SHELL_CACHE = `dtr-shell-${VERSION}`;
 const MAP_CACHE = 'dtr-map-v1';
 const MAP_CACHE_MAX = 6000;

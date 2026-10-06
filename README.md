@@ -2,7 +2,7 @@
 
 A web app (PWA) for iPhone that gives sat nav style, turn-by-turn directions around driving test routes. It's set up for **Nottingham (Chilwell)** test centre, with practice routes around **Tamworth & Polesworth** too, and you can switch to or add any other centre.
 
-- **Common and popular routes.** Seven built-in Chilwell routes covering the roads learners report most: Bardills Island, the 70 mph A52, Bramcote Island, the Chilwell and Beeston tram roads, Attenborough Lane, Cator Lane, Beeston Rylands, Stapleford, Sandiacre and M1 junction 25. They are ranked by how often those roads come up. There are also eight **Tamworth & Polesworth** practice routes that cover the same kinds of road.
+- **Common and popular routes.** Twelve built-in Chilwell routes: five real test routes traced from route screenshots (test routes 11, 12, 14, 17 and 21), and seven more covering the roads learners report most: Bardills Island, the 70 mph A52, Bramcote Island, the Chilwell and Beeston tram roads, Attenborough Lane, Cator Lane, Beeston Rylands, Stapleford, Sandiacre and M1 junction 25. There are also eight **Tamworth & Polesworth** practice routes that cover the same kinds of road.
 - **Sat nav style directions.** A big manoeuvre arrow with distance, roundabout diagrams that go clockwise UK-style and show the exit number, lane arrows, a countdown bar as you get close to each turn, "then" hints for close turns, and a white arrow painted on the map at each junction. UK voice prompts ("In 200 yards, turn left onto Barton Lane", "At the roundabout, take the third exit onto the A 52"), with an optional **examiner style** ("Take the second road on the left, please").
 - **No U-turns.** A test route shouldn't make you turn round in the road. Routes are checked for U-turns when they're worked out, and the waypoints are nudged to design them out. The route screen says **No U-turns**, or warns you if one couldn't be removed. Reroutes avoid them too.
 - **Off-route correction.** If you miss a turn it notices within a few seconds and works out a way back onto the rest of the test route. With no signal, it points you back to the blue line and picks the route up again when you rejoin it.
@@ -39,19 +39,26 @@ Updates install themselves: the next time you open the app with a signal it relo
 
 ## The Chilwell routes
 
-| # | Route | What it covers |
-|---|-------|----------------|
-| 1 | Bardills Island & the A52 ★ | Toton, Bardills Island, 70 mph A52, Bramcote Island, Stapleford crossroads |
-| 2 | Chilwell High Road & Beeston ★ | Attenborough Lane, Chilwell High Road, trams on Chilwell Road, Beeston, Queens Road |
-| 3 | Cator Lane, Bramcote Island & the A52 | Tram crossing, speed changes, Bramcote Island, A52 west |
-| 4 | Beeston Rylands & the level crossing | Level crossing by Beeston station, 20 mph estate roads, manoeuvre practice |
-| 5 | M1 junction 25, Sandiacre & Stapleford | M1 J25 roundabout, Bostocks Lane, Derby Road, Toton Lane |
-| 6 | Stapleford & Ilkeston Road | Stapleford town centre, Church Street, Ilkeston Road, Bramcote Island |
-| 7 | Chilwell & Toton estates | Swiney Way, Inham Road, Eskdale Drive, Bramcote Lane, tram crossings |
+| # | Route | Test route | What it covers |
+|---|-------|-----------|----------------|
+| 1 | Beeston, the A52 & Long Eaton ★ | 11 | Queens Road, University Boulevard, Woodside Road, Priory Island, 70 mph A52, Bramcote and Bardills Islands, Bostocks Lane, Long Eaton (18 km) |
+| 2 | Bardills, junction 25 & Stapleford ★ | 12 | Swiney Way, Bardills Island, A52, M1 J25 roundabout, Bostocks Lane, Sandiacre, Stapleford, Brookhill Street (13 km) |
+| 3 | Beeston, Lenton Abbey & junction 25 ★ | 14 | Queens Road, University Boulevard, Lenton Abbey estate, 70 mph A52, Bramcote and Bardills Islands, out to M1 J25 and back (19 km) |
+| 4 | Chilwell, Beeston & Lenton Abbey ★ | 17 | Chilwell High Road beside the trams, Beeston town centre, Wollaton Road, Priory Island, Lenton Abbey estate, Humber Road (11 km) |
+| 5 | Bramcote, the A52 & Beeston ★ | 21 | Attenborough Lane, Bramcote Lane, Town Street, Bramcote Island, A52, Lenton Abbey estate, Beeston (12 km) |
+| 6 | Bardills Island & the A52 ★ | | Toton, Bardills Island, 70 mph A52, Bramcote Island, Stapleford crossroads |
+| 7 | Chilwell High Road & Beeston ★ | | Attenborough Lane, Chilwell High Road, trams on Chilwell Road, Beeston, Queens Road |
+| 8 | Cator Lane, Bramcote Island & the A52 | | Tram crossing, speed changes, Bramcote Island, A52 west |
+| 9 | Beeston Rylands & the level crossing | | Level crossing by Beeston station, 20 mph estate roads, manoeuvre practice |
+| 10 | M1 junction 25, Sandiacre & Stapleford | | M1 J25 roundabout, Bostocks Lane, Derby Road, Toton Lane |
+| 11 | Stapleford & Ilkeston Road | | Stapleford town centre, Church Street, Ilkeston Road, Bramcote Island |
+| 12 | Chilwell & Toton estates | | Swiney Way, Inham Road, Eskdale Drive, Bramcote Lane, tram crossings |
 
-DVSA stopped publishing test routes in 2017, so these are built from the roads and junctions that learners and instructors most often report for Chilwell. Your actual test may use different roads. Practising the *types* of road is what matters.
+Routes 1 to 5 were traced from screenshots of real Chilwell test routes, and each card has a chip with its original test route number. Each screenshot was lined up with OpenStreetMap road data, and the line was matched to the roads it follows. The one-way streets and banned turns along the way decide which way round each loop goes. Each route is stored as a few exact points with a direction of travel, just enough to keep the router on the same roads.
 
-The routes are written like an examiner's route card: "Barton Lane between Nottingham Road and Eldon Road", or "the A52 heading east near here". The first time each route is opened, the app finds those exact roads in OpenStreetMap, works out the drive and saves it on the phone. If a road can't be found, the route preview says so. You can then use **Edit a copy** to drag the waypoints, or **Recalculate route**.
+DVSA stopped publishing test routes in 2017, so routes 6 to 12 are built from the roads and junctions that learners and instructors most often report for Chilwell. Your actual test may use different roads. Practising the *types* of road is what matters.
+
+Routes 6 to 12 are written like an examiner's route card: "Barton Lane between Nottingham Road and Eldon Road", or "the A52 heading east near here". The first time each route is opened, the app finds those exact roads in OpenStreetMap, works out the drive and saves it on the phone. If a road can't be found, the route preview says so. You can then use **Edit a copy** to drag the waypoints, or **Recalculate route**.
 
 ## The Tamworth & Polesworth practice routes
 

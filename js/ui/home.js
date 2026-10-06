@@ -23,7 +23,8 @@ export function numberFor(app, route) {
 }
 
 function sortRoutes(routes) {
-  return [...routes].sort((a, b) => (b.popularity || 0) - (a.popularity || 0) || a.name.localeCompare(b.name));
+  // Most popular first; equal ones keep their order in the centre file, so card numbers run in order.
+  return [...routes].sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
 }
 
 function statsLine(app, route, data) {

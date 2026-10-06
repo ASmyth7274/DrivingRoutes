@@ -56,6 +56,8 @@ test('centre data is well formed', () => {
         assert.ok(Array.isArray(p) && Math.abs(p[0] - centre.location[0]) < 0.2 && Math.abs(p[1] - centre.location[1]) < 0.2, `waypoint in ${r.id} is far from the centre`);
         assert.ok(w.road || w.ref || w.at, `waypoint in ${r.id} needs a road, ref or exact point`);
         if (w.bearing != null) assert.ok(w.bearing >= 0 && w.bearing < 360);
+        // An exact point on a dual carriageway needs a direction, or it can snap to the wrong side.
+        if (w.at && !w.road && !w.ref) assert.ok(w.bearing != null, `exact waypoint in ${r.id} needs a bearing`);
       }
     }
     for (const h of centre.hotspots || []) {

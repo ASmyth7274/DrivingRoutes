@@ -25,7 +25,8 @@ export function enter(app, params = {}) {
   delete def.builtIn;
   delete def.hidden;
   def.custom = true;
-  def.waypoints = (def.waypoints || []).map((w) => ({ ...w }));
+  // Built-in routes can give a road and an approximate spot (near) instead of an exact point.
+  def.waypoints = (def.waypoints || []).map((w) => ({ ...w, at: w.at || w.near }));
 
   E = { app, def, selected: -1, history: [], timer: null, token: 0, model: null };
 
@@ -91,6 +92,8 @@ function drawMarkers() {
       draggable: true,
       onDrag: async (ll) => {
         snapshot();
+        // A moved point is a new point: forget the old road, direction and so on.
+        for (const k of Object.keys(w)) delete w[k];
         w.at = [Number(ll[0].toFixed(6)), Number(ll[1].toFixed(6))];
         w.road = '';
         try {
@@ -127,7 +130,7 @@ function renderPanel() {
     </div>
     ${E.selected >= 0 ? `<p class="desc">Point ${E.selected + 1} selected: new taps are added after it.</p>` : ''}
     ${d.waypoints.length ? `<div class="card"><ul class="wp-list">
-      ${d.waypoints.map((w, i) => `<li><span class="n" style="${i === E.selected ? 'background:#e8453c' : ''}">${i + 1}</span><span class="r">${esc(w.road || 'Unnamed road')}</span>
+      ${d.waypoints.map((w, i) => `<li><span class="n" style="${i === E.selected ? 'background:#e8453c' : ''}">${i + 1}</span><span class="r">${esc(w.road || w.ref || w.label || 'Unnamed road')}</span>
         <button class="icon-btn" data-del="${i}" aria-label="Remove point ${i + 1}">${icon('trash')}</button></li>`).join('')}
     </ul></div>` : ''}
     <div class="actions">
@@ -159,7 +162,11 @@ async function preview() {
   E.loading = true;
   renderPanel();
   try {
-    const points = [start, ...E.def.waypoints.map((w) => w.at), end].map(([lon, lat]) => ({ lon, lat }));
+    const points = [
+      { lon: start[0], lat: start[1], bearing: E.def.startBearing ?? null },
+      ...E.def.waypoints.map((w) => ({ lon: w.at[0], lat: w.at[1], bearing: w.bearing ?? null })),
+      { lon: end[0], lat: end[1] },
+    ];
     const data = await routeRequest(points);
     if (!E || my !== E.token) return;
     E.model = new RouteModel(data);
@@ -221,7 +228,11 @@ function save() {
   const app = E.app;
   const def = E.def;
   def.name = (def.name || '').trim() || `My route ${new Date().toLocaleDateString('en-GB')}`;
-  def.waypoints = def.waypoints.map((w) => (w.road ? { at: w.at, road: w.road } : { at: w.at }));
+  def.waypoints = def.waypoints.map(({ near, ...w }) => {
+    const out = { ...w, at: w.at || near };
+    if (!out.road) delete out.road;
+    return out;
+  });
   const { custom, ...clean } = def;
   void custom;
   saveCustomRoute(app.centre.id, clean);
